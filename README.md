@@ -1,141 +1,97 @@
-# Dengue Time Series Forecasting
+# DengCast: Dengue Time Series Forecasting
 
-## Introduction
+A structured machine learning pipeline for forecasting weekly dengue cases using environmental variables and temporal features.
 
-This repository contains a structured machine learning pipeline for forecasting weekly dengue cases in San Juan (Puerto Rico) and Iquitos (Peru) using environmental and temporal features.
+This repository implements **DengCast**, a forecasting pipeline evaluated on the **DrivenData DengAI dataset**, predicting weekly dengue cases for:
 
-The project is based on the DrivenData “DengAI: Predicting Disease Spread” dataset. The primary objective is to predict weekly dengue case counts (`total_cases`) using climate variables and autoregressive temporal features, while maintaining strict chronological validation.
+- **San Juan, Puerto Rico**
+- **Iquitos, Peru**
 
-This work focuses on disciplined time-series modeling, proper cross-validation strategy, reproducibility, and practical machine learning engineering rather than experimental or novel research methods.
-
----
-
-## Features
-
-- Data preprocessing and cleaning tailored to the DengAI dataset.
-- Exploratory Data Analysis (EDA) for understanding seasonal patterns and outbreak spikes.
-- Baseline regression models (Linear Regression, Random Forest) for performance benchmarking.
-- Temporal feature engineering:
-  - Autoregressive lags (1–4 weeks)
-  - Rolling mean (4 and 8 weeks)
-  - Rolling standard deviation
-- Log transformation of the target variable for variance stabilization.
-- Chronological validation using `TimeSeriesSplit`.
-- Final forecasting model using CatBoost Regressor with MAE loss.
-- Reproducible Jupyter notebooks covering the complete modeling pipeline.
+The project emphasizes **disciplined time-series modeling**, **leak-free validation**, and **interpretable feature engineering**.
 
 ---
 
-## Requirements
+## Overview
 
-To run this project, ensure you have:
+Dengue outbreaks exhibit strong temporal autocorrelation.  
+Instead of complex deep learning architectures, DengCast focuses on **structured feature engineering and robust validation**.
 
-- Python 3.8 or higher
-- pip (Python package manager)
+The pipeline combines:
 
-Required Python packages (see `requirements.txt`):
+- climate features
+- autoregressive case lags
+- rolling statistics
+- gradient boosting regression
 
-- numpy
-- pandas
-- matplotlib
-- seaborn
-- scikit-learn
-- catboost
-- jupyter
+All experiments follow **strict chronological cross-validation** to avoid temporal leakage.
 
 ---
 
-## Installation
+## Key Features
 
-Follow these steps to set up the project locally:
+**Data Processing**
+- Preprocessing pipeline tailored to the DengAI dataset
+- Handling of missing values via forward-fill within training folds
 
-1. Clone the repository:
+**Exploratory Analysis**
+- Seasonal trend analysis
+- Outbreak spike visualization
+- Feature distribution analysis
 
-    ```bash
-    git clone https://github.com/hardik-thapar/dengue-time-series-forecasting.git
-    cd dengue-time-series-forecasting
-    ```
+**Temporal Feature Engineering**
+- Lag features (1–4 weeks)
+- Rolling mean (4 and 8 weeks)
+- Rolling standard deviation
 
-2. (Optional) Create a virtual environment:
+**Modeling**
+- Log transformation of target variable
+- CatBoost gradient boosting regression
+- MAE optimization objective
 
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
+**Validation**
+- Chronological `TimeSeriesSplit`
+- Fold-level performance evaluation
 
-3. Install dependencies:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
----
-
-## Dataset
-
-The dataset is not included in this repository.
-
-Download the DengAI dataset from the official competition page:
-
-https://www.drivendata.org/competitions/44/dengai-predicting-disease-spread/
-
-After downloading:
-
-- Place the training and test CSV files inside the `data/` directory.
-- Follow the structure described in `data/README.md`.
-
-All rights to the dataset belong to DrivenData and the associated data providers.
+**Reproducibility**
+- Structured Jupyter notebooks
+- Fixed random seeds
+- Documented experiment workflow
 
 ---
 
-## Usage
-
-After installation:
-
-1. Place the dataset files inside the `data/` directory.
-2. Launch Jupyter Notebook:
-
-    ```bash
-    jupyter notebook
-    ```
-
-3. Run notebooks in the following order:
-
-   - `01_eda.ipynb`
-   - `02_baseline_models.ipynb`
-   - `03_feature_engineering.ipynb`
-   - `04_final_model.ipynb`
-
-Each notebook builds upon the previous one, moving from exploration to final model validation.
-
----
-
-## Typical Workflow
-
-```mermaid
-flowchart TD
-    A[Load Climate and Case Data] --> B[Data Cleaning and Preprocessing]
-    B --> C[Exploratory Data Analysis]
-    C --> D[Baseline Modeling]
-    D --> E[Temporal Feature Engineering]
-    E --> F[TimeSeriesSplit Cross-Validation]
-    F --> G[Train CatBoost Model]
-    G --> H[Evaluate MAE]
-    H --> I[Final Model Training]
-```
-
----
 ## Results (Cross-Validated)
 
-| City       | Baseline MAE | Final MAE |
-|------------|--------------|-----------|
-| San Juan   | ~30          | ~11.8     |
-| Iquitos    | ~31          | ~4.7      |
+| City | Baseline MAE | DengCast MAE |
+|-----|-----|-----|
+| San Juan | ~30 | **11.87** |
+| Iquitos | ~31 | **4.74** |
 
-Performance improvement was primarily driven by autoregressive lag features and disciplined time-series validation.
+Performance improvements are primarily driven by **autoregressive lag features**, which capture short-term outbreak momentum.
 
 ---
 
-## License
+## Pipeline
 
-This repository is licensed under the MIT License.
+The DengCast workflow follows a structured machine learning pipeline:
+
+```mermaid
+flowchart LR
+    A[Climate Data + Case Counts] --> B[Temporal Feature Engineering]
+    B --> C[Target Transform log(1+y)]
+    C --> D[CatBoost Model Training]
+    D --> E[TimeSeriesSplit Cross-Validation]
+    E --> F[Evaluation (MAE, Ablation)]
+```
+dengcast-dengue-forecasting
+│
+├── data/
+│
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_baseline_models.ipynb
+│   ├── 03_feature_engineering.ipynb
+│   └── 04_final_model.ipynb
+│
+├── requirements.txt
+├── README.md
+
