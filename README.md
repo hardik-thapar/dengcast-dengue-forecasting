@@ -70,28 +70,4 @@ Performance improvements are primarily driven by **autoregressive lag features**
 
 ---
 
-## Pipeline
-
-The DengCast workflow follows a structured machine learning pipeline:
-
-```mermaid
-flowchart LR
-    A[Climate Data + Case Counts] --> B[Temporal Feature Engineering]
-    B --> C[Target Transform log(1+y)]
-    C --> D[CatBoost Model Training]
-    D --> E[TimeSeriesSplit Cross-Validation]
-    E --> F[Evaluation (MAE, Ablation)]
-```
-dengcast-dengue-forecasting
-│
-├── data/
-│
-├── notebooks/
-│   ├── 01_eda.ipynb
-│   ├── 02_baseline_models.ipynb
-│   ├── 03_feature_engineering.ipynb
-│   └── 04_final_model.ipynb
-│
-├── requirements.txt
-├── README.md
 
